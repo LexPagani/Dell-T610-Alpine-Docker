@@ -23,9 +23,6 @@ services:
       - ./config:/config
       - /Storage/30-39_Video/31_Filme:/data/movies:ro
       - /Storage/30-39_Video/32_Sendungen:/data/tvshows:ro
-
-    devices:
-      - /dev/some_device:/dev/some_device
     
     # Miscellaneous
     environment:
