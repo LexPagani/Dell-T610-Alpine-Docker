@@ -1,1 +1,1 @@
-## Irgendein Scheiss den ich mal hier rein schreibe
+## Main folder for Docker-Compose on Dell-T610-Alpine-Docker
