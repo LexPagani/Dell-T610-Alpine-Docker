@@ -1,0 +1,31 @@
+name: Portainer
+
+services:
+  Portainer:
+    # Container
+    container_name: Portainer
+    image: portainer/portainer-ce:latest
+    restart: unless-stopped
+    
+    # Security
+    security_opt:
+      - no-new-privileges:true
+      - seccomp=unconfined
+      - cap-drop=ALL # Drop all capabilities
+    
+    # Networking
+    hostname: Portainer
+    networks:
+      - traefik
+    ports:
+      - "9000:9000"
+
+    # Mounts
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /etc/localtime:/etc/localtime:ro
+      - ./data:/data
+
+networks:
+  traefik:
+    external: true

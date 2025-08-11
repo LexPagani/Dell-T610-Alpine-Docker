@@ -1,0 +1,72 @@
+name: # Leave empty to use the folder name
+
+services:
+  servicename:
+    # Container
+    container_name: ${CONTAINER_NAME}
+    image: imagename:tag
+    healthcheck:
+      test: ["CMD", "command_to_check_health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    depends_on:
+      servicename:
+        condition: service_healthy #service_healthy, service_started, or service_completed_successfully
+        restart: true
+    restart: unless-stopped
+    
+    # Security
+    security_opt:
+      - no-new-privileges:true
+      - seccomp=unconfined
+      - cap-drop=ALL # Drop all capabilities
+    
+    # Networking
+    hostname: ${CONTAINER_NAME}
+    DNS:
+      -
+    network_mode: bridge # or host, or service:servicename
+    networks:
+      - network_name
+    ports:
+      - "host_port:container_port" 
+    
+    # Mounts
+    volumes:
+      - host_path:container_path
+    devices:
+      - /dev/some_device:/dev/some_device
+    
+    # Miscellaneous
+    secrets:
+      - secret_name
+    environment:
+      - ENV_VAR_NAME=value
+    labels:
+      # Watchtower
+      - "com.centurylinklabs.watchtower.monitor-only=true" # Comment to automatically update via Watchtower (enabled by default)
+      # Traefik
+      - "traefik.enable=true"
+      - "traefik.http.routers.http-catchall.entrypoints=http"
+      - "traefik.http.routers.http-catchall.rule=HostRegexp(`{host:.+}`)"
+      - "traefik.http.routers.http-catchall.middlewares=redirect-to-https"
+      - "traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https"
+      - "traefik.http.routers.traefik-rtr.entrypoints=https"
+      - "traefik.http.routers.traefik-rtr.rule=Host(`traefik.$DOMAINNAME`)"
+      - "traefik.http.routers.traefik-rtr.tls=true"
+      - "traefik.http.routers.traefik-rtr.tls.certresolver=dns-netcup"
+      - "traefik.http.routers.traefik-rtr.tls.domains[0].main=$DOMAINNAME"
+      - "traefik.http.routers.traefik-rtr.tls.domains[0].sans=*.$DOMAINNAME"
+      - "traefik.http.routers.traefik-rtr.service=api@internal"
+      - "traefik.http.routers.traefik-rtr.middlewares=middlewares-basic-auth@file"
+
+secrets:
+  secret_name:
+    file: /path/to/secret/file  
+
+volumes:
+
+networks:
+  traefik:
+    external: true
