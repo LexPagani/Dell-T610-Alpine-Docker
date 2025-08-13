@@ -1,0 +1,59 @@
+name: ${CONTAINER_NAME} # Leave empty to use the folder name
+
+services:
+  Pihole:
+    # Container
+    container_name: ${CONTAINER_NAME}
+    image: pihole/pihole:latest
+    restart: unless-stopped
+    
+    # Security
+    security_opt:
+      - no-new-privileges:true
+    cap_add:
+      - NET_ADMIN
+    
+    # Networking
+    hostname: ${CONTAINER_NAME}
+    dns:
+      - 127.0.0.1
+      - 1.1.1.1
+      - 8.8.8.8
+    #networks:
+      #- traefik
+    ports:
+      - "53:53/tcp"
+      - "53:53/udp"
+      #- "67:67/udp"
+      - "82:80/tcp"
+      - "445:443/tcp" 
+    
+    # Mounts
+    volumes:
+      - ./config/:/etc/pihole/
+      - ./dnsmasq.d/:/etc/dnsmasq.d/
+   
+    # Miscellaneous
+    secrets:
+      - api-password
+    environment:
+      - TZ=${TZ}
+      - DNS1=1.1.1.1
+      - DNS2=8.8.8.8
+      - DNS_BOGUS_PRIV=true
+      - WEBUIBOXEDLAYOUT=boxed
+      - DNSMASQ_LISTENING=ALL
+      - VIRTUAL_HOST=${DOMAINNAME}.ing-ace.duckdns.org
+      - FTLCONF_webserver_api_password=Rehire_Shadow_Construct_Punch_Pesky_Trio
+
+    labels:
+      # Watchtower
+      - "com.centurylinklabs.watchtower.monitor-only=true" # Comment to automatically update via Watchtower (enabled by default)
+
+secrets:
+  api-password:
+    file: ./api-password
+
+#networks:
+  #traefik:
+    #external: true

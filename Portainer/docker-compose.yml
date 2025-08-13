@@ -14,8 +14,8 @@ services:
     
     # Networking
     hostname: ${CONTAINER_NAME}
-    networks:
-      - traefik
+    #networks:
+      #- traefik
     ports:
       - "9000:9000"
 
@@ -29,21 +29,7 @@ services:
     labels:
       # Watchtower
       - "com.centurylinklabs.watchtower.monitor-only=true" # Comment to automatically update via Watchtower (enabled by default)
-      # Traefik
-      - "traefik.enable=true"
-      - "traefik.http.routers.http-catchall.entrypoints=http"
-      - "traefik.http.routers.http-catchall.rule=HostRegexp(`{host:.+}`)"
-      - "traefik.http.routers.http-catchall.middlewares=redirect-to-https"
-      - "traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https"
-      - "traefik.http.routers.traefik-rtr.entrypoints=https"
-      - "traefik.http.routers.traefik-rtr.rule=Host(`traefik.$DOMAINNAME`)"
-      - "traefik.http.routers.traefik-rtr.tls=true"
-      - "traefik.http.routers.traefik-rtr.tls.certresolver=dns-netcup"
-      - "traefik.http.routers.traefik-rtr.tls.domains[0].main=$DOMAINNAME"
-      - "traefik.http.routers.traefik-rtr.tls.domains[0].sans=*.$DOMAINNAME"
-      - "traefik.http.routers.traefik-rtr.service=api@internal"
-      - "traefik.http.routers.traefik-rtr.middlewares=middlewares-basic-auth@file"
 
-networks:
-  traefik:
-    external: true
+#networks:
+  #traefik:
+    #external: true
