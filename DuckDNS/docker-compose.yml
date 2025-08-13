@@ -1,0 +1,40 @@
+name: ${CONTAINER_NAME} # Leave empty to use the folder name
+
+services:
+  DuckDNS:
+    # Container
+    container_name: ${CONTAINER_NAME}
+    image: lscr.io/linuxserver/duckdns:latest
+    restart: unless-stopped
+    
+    # Security
+    security_opt:
+      - no-new-privileges:true
+      - seccomp=unconfined
+    
+    # Networking
+    hostname: ${CONTAINER_NAME}
+   
+    # Mounts
+    volumes:
+      - ./config:/config
+    
+    # Miscellaneous
+    secrets:
+      - subdomains
+      - token
+    environment:
+      - PUID=${USER_ID}
+      - PGID=${GROUP_ID}
+      - SUBDOMAINS=ing-ace.duckdns.org
+      - TOKEN=1ca8033e-1163-4ecf-9abb-f06e435dd282
+      - LOG_FILE=false
+    labels:
+      # Watchtower
+      - "com.centurylinklabs.watchtower.monitor-only=true" # Comment to automatically update via Watchtower (enabled by default)
+
+secrets:
+  subdomains:
+    file: ./subdomains
+  token:
+    file: ./token

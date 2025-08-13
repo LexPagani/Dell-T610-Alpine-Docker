@@ -1,4 +1,4 @@
-name: # Leave empty to use the folder name
+name: ${CONTAINER_NAME} # Leave empty to use the folder name
 
 services:
   servicename:
