@@ -24,10 +24,11 @@ services:
       - subdomains
       - token
     environment:
-      - PUID=${USER_ID}
-      - PGID=${GROUP_ID}
-      - SUBDOMAINS=ing-ace.duckdns.org
-      - TOKEN=1ca8033e-1163-4ecf-9abb-f06e435dd282
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - FILE__SUBDOMAINS=/run/secrets/subdomains
+      - FILE__TOKEN=/run/secrets/token
+      - UPDATE_IP=ipv4
       - LOG_FILE=false
     labels:
       # Watchtower
